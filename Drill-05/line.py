@@ -1,37 +1,17 @@
-import turtle
 import random
 from pico2d import *
 
 KPU_WIDTH, KPU_HEIGHT = 1280, 1024
 
-
-def stop():
-    turtle.bye()
-
-
-def draw_big_point(p):
-    turtle.goto(p)
-    turtle.color(0.8, 0.9, 0)
-    turtle.dot(15)
-    turtle.write('     ' + str(p))
-
-
-def draw_point(p):
-    turtle.goto(p)
-    turtle.dot(5, random.random(), random.random(), random.random())
-
-
-def draw_line(p1, p2):
-    draw_big_point(p1)
-    draw_big_point(p2)
-
+def draw_charecter(p1, p2):
+    global character_x, character_y
+    global direct
+    global frame
     for i in range(0, 100 + 1, 2):
         t = i / 100
-        x = (1 - t) * p1[0] + t * p2[0]
-        y = (1 - t) * p1[1] + t * p2[1]
-        draw_point((x, y))
+        character_x = (1 - t) * p1[0] + t * p2[0]
+        character_y = (1 - t) * p1[1] + t * p2[1]
 
-    draw_point(p2)
     pass
 
 
@@ -76,21 +56,17 @@ hide_cursor()
 while running:
     clear_canvas()
     kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
-    Mouse.draw_now(mouse_x, mouse_y)
+    Mouse.draw_now(mouse_x + 30, mouse_y - 30)
     if direct == 0:
-        character.clip_draw(frame * 100, 100, 100, 100, character_x, character_y)
+        character.clip_draw(frame * 100, 100, 100, 100, move_x, move_y)
         update_canvas()
         frame = (frame + 1) % 8
-        #character_x += 15
-        #if x >= 760:
-           # direct = 1
-    if direct == 1:
-        character.clip_draw(frame * 100, 0, 100, 100, character_x, character_y)
+    elif direct == 1:
+        character.clip_draw(frame * 100, 0, 100, 100, move_x, move_y)
         update_canvas()
         frame = (frame + 1) % 8
-        #x -= 15
-        #if x <= 40:
-            #direct = 0
+   # draw_charecter(move_x, move_y)
+
     delay(0.03)
     update_canvas()
 
