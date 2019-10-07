@@ -89,6 +89,7 @@ while running:
         update_canvas()
         frame = (frame + 1) % 8
 
+
     update_canvas()
     delay(0.03)
     handle_events()
