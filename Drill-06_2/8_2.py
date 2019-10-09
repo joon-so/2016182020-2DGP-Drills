@@ -87,6 +87,7 @@ while running:
 
     move_charecter((character_x, character_y), (move_x, move_y))
 
+
     update_canvas()
     delay(0.03)
 
