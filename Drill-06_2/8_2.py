@@ -61,12 +61,82 @@ def draw_curve_4_points(p1, p2, p3, p4):
         update_canvas()
         frame = (frame + 1) % 8
 
+    for i in range(50, 200, 2):
+        clear_canvas()
+        kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
+        t = i / 200
+        x = (2 * t ** 2 - 3 * t + 1) * p2[0] + (-4 * t ** 2 + 4 * t) * p3[0] + (2 * t ** 2 - t) * p4[0]
+        y = (2 * t ** 2 - 3 * t + 1) * p2[1] + (-4 * t ** 2 + 4 * t) * p3[1] + (2 * t ** 2 - t) * p4[1]
+        character.clip_draw(frame * 100, 100, 100, 100, x, y)
+        update_canvas()
+        frame = (frame + 1) % 8
+
+
+
     ch_i += 1
     if ch_i == 10:
         ch_i = 0
 
     pass
 
+def draw_curve_10_points(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10):
+    global frame
+    # draw p1-p2
+    for i in range(0, 500, 1):
+        clear_canvas()
+        kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
+        t = i / 1000
+        x = (2 * t ** 2 - 3 * t + 1) * p1[0] + (-4 * t ** 2 + 4 * t) * p2[0] + (2 * t ** 2 - t) * p3[0]
+        y = (2 * t ** 2 - 3 * t + 1) * p1[1] + (-4 * t ** 2 + 4 * t) * p2[1] + (2 * t ** 2 - t) * p3[1]
+        character.clip_draw(frame * 100, 100, 100, 100, x, y)
+        update_canvas()
+        frame = (frame + 1) % 8
+
+
+    # draw p2-p3
+    for i in range(0, 1000, 1):
+        clear_canvas()
+        kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
+        t = i / 1000
+        x = ((-t ** 3 + 2 * t ** 2 - t) * p1[0] + (3 * t ** 3 - 5 * t ** 2 + 2) * p2[0] + (-3 * t ** 3 + 4 * t ** 2 + t) * p3[0] +
+    (t ** 3 - t ** 2) * p4[0]) / 2
+        y = ((-t ** 3 + 2 * t ** 2 - t) * p1[1] + (3 * t ** 3 - 5 * t ** 2 + 2) * p2[1] + (-3 * t ** 3 + 4 * t ** 2 + t) * p3[1] +
+    (t ** 3 - t ** 2) * p4[1]) / 2
+        character.clip_draw(frame * 100, 100, 100, 100, x, y)
+        update_canvas()
+        frame = (frame + 1) % 8
+
+
+
+    # draw p3-p4
+    for i in range(50, 1000, 1):
+        clear_canvas()
+        kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
+        t = i / 1000
+        x = (2 * t ** 2 - 3 * t + 1) * p2[0] + (-4 * t ** 2 + 4 * t) * p3[0] + (2 * t ** 2 - t) * p4[0]
+        y = (2 * t ** 2 - 3 * t + 1) * p2[1] + (-4 * t ** 2 + 4 * t) * p3[1] + (2 * t ** 2 - t) * p4[1]
+        character.clip_draw(frame * 100, 100, 100, 100, x, y)
+        update_canvas()
+        frame = (frame + 1) % 8
+
+
+
+    # draw p4-p1
+    for i in range(0, 1000, 1):
+        clear_canvas()
+        kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
+        t = i / 1000
+        x = ((-t ** 3 + 2 * t ** 2 - t) * p3[0] + (3 * t ** 3 - 5 * t ** 2 + 2) * p4[0] + (-3 * t ** 3 + 4 * t ** 2 + t) * p1[0] +
+    (t ** 3 - t ** 2) * p2[0]) / 2
+        y = ((-t ** 3 + 2 * t ** 2 - t) * p3[1] + (3 * t ** 3 - 5 * t ** 2 + 2) * p4[1] + (-3 * t ** 3 + 4 * t ** 2 + t) * p1[1] +
+    (t ** 3 - t ** 2) * p2[1]) / 2
+        character.clip_draw(frame * 100, 100, 100, 100, x, y)
+        update_canvas()
+        frame = (frame + 1) % 8
+
+
+
+    pass
 
 open_canvas(KPU_WIDTH, KPU_HEIGHT)
 
@@ -88,14 +158,7 @@ hide_cursor()
 while running:
     clear_canvas()
 
-    if ch_i < 7:
-        draw_curve_4_points(ch[ch_i], ch[ch_i + 1], ch[ch_i + 2], ch[ch_i + 3])
-    elif ch_i == 7:
-        draw_curve_4_points(ch[ch_i], ch[ch_i + 1], ch[ch_i + 2], ch[0])
-    elif ch_i == 8:
-        draw_curve_4_points(ch[ch_i], ch[ch_i + 1], ch[0], ch[1])
-    elif ch_i == 9:
-        draw_curve_4_points(ch[ch_i], ch[0], ch[1], ch[2])
+    draw_curve_10_points(ch[0], ch[1], ch[2], ch[3], ch[4], ch[5], ch[6], ch[7], ch[8], ch[9])
 
     update_canvas()
     delay(0.03)
