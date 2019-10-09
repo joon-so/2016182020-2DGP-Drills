@@ -174,6 +174,7 @@ def draw_curve_10_points(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10):
         update_canvas()
         frame = (frame + 1) % 8
 
+
     # draw p8-p9
     for i in range(0, 1000, 1):
         clear_canvas()
