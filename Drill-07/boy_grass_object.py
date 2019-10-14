@@ -1,5 +1,7 @@
+from Tools.demo.beer import n
 from pico2d import *
 import random
+
 
 # Game object class here
 class Grass:
@@ -12,7 +14,7 @@ class Grass:
 
 class Boy:
     def __init__(self):
-        self.x, self.y = random.randint(100, 700), 90
+        self.x, self.y = random.randint(50, 700), 90
         self.frame = random.randint(0, 7)
         self.image = load_image('run_animation.png')
 
@@ -26,11 +28,12 @@ class Boy:
 
 class Small_Ball:
     def __init__(self):
-        self.x, self.y = random.randint(100, 700), 599
+        self.x, self.y = random.randint(20, 780), 599
         self.image = load_image('ball21x21.png')
+        self.speed = random.randint(5, 20)
 
     def update(self):
-        self.y -= 10
+        self.y -= self.speed
         if self.y <= 65:
             self.y = 65
 
@@ -40,16 +43,18 @@ class Small_Ball:
 
 class Big_Ball:
     def __init__(self):
-        self.x, self.y = random.randint(100, 700), 599
+        self.x, self.y = random.randint(20, 780), 599
         self.image = load_image('ball41x41.png')
+        self.speed = random.randint(5, 20)
 
     def update(self):
-        self.y -= 10
+        self.y -= self.speed
         if self.y <= 75:
             self.y = 75
 
     def draw(self):
         self.image.clip_draw(0, 0, 41, 41, self.x, self.y)
+
 
 def handle_events():
     global running
@@ -61,12 +66,11 @@ def handle_events():
             running = False
 
 
-
 # initialization code
 open_canvas()
 
-team = [Boy() for i in range(11)]
 grass = Grass()
+team = [Boy() for i in range(11)]
 x = random.randint(5, 15)
 small_ball_team = [Small_Ball() for i in range(x)]
 big_ball_team = [Big_Ball() for i in range(20 - x)]
@@ -74,6 +78,7 @@ big_ball_team = [Big_Ball() for i in range(20 - x)]
 running = True
 
 # game main loop code
+
 while running:
     handle_events()
 
@@ -83,21 +88,19 @@ while running:
         small_ball.update()
     for big_ball in big_ball_team:
         big_ball.update()
-        
+
     clear_canvas()
     grass.draw()
-    
     for boy in team:
         boy.draw()
     for small_ball in small_ball_team:
         small_ball.draw()
     for big_ball in big_ball_team:
         big_ball.draw()
-        
     update_canvas()
 
     delay(0.03)
 
-
 # finalization code
+
 close_canvas()
