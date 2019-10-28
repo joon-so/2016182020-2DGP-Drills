@@ -51,6 +51,8 @@ class IdleState:
 class RunState:
     @staticmethod
     def enter(boy, event):
+        if event == SHIFT_UP:
+            boy.dashtimer = 70
         if event == RIGHT_DOWN:
             boy.velocity += 2
             boy.dire = 1
@@ -65,7 +67,6 @@ class RunState:
             boy.dire = 2
 
         boy.dir = boy.velocity
-        #boy.dashtimer = 50
 
     @staticmethod
     def exit(boy, event):
@@ -89,22 +90,14 @@ class RunState:
 class DashState:
     @staticmethod
     def enter(boy, event):
-        """
-        if event == RIGHT_DOWN and event == SHIFT_DOWN:
-            boy.velocity += 4
-        elif event == LEFT_DOWN and event == SHIFT_DOWN:
-            boy.velocity -= 4
-        elif event == RIGHT_UP and event == SHIFT_DOWN:
-            boy.velocity -= 4
-        elif event == LEFT_UP and event == SHIFT_DOWN:
-            boy.velocity += 4
-        """
         boy.vserve = 4
         if event == SHIFT_DOWN:
             if boy.dire == -1:
                 boy.velocity -= boy.vserve
             elif boy.dire == 1:
                 boy.velocity += boy.vserve
+        elif event == SHIFT_UP:
+            boy.dashtimer = 70
         elif event == LEFT_UP:
             boy.dire = 0
         elif event == RIGHT_UP:
@@ -119,15 +112,18 @@ class DashState:
         elif boy.dire == -1:
             boy.velocity += boy.vserve
         boy.vserve = 2
+        #boy.dashtimer = 70
         pass
 
     @staticmethod
     def do(boy):
         boy.frame = (boy.frame + 1) % 8
         boy.timer -= 1
-        boy.dashtimer -= 1
         boy.x += boy.velocity
         boy.x = clamp(25, boy.x, 800 - 25)
+        boy.dashtimer -= 1
+        if boy.dashtimer == 0:
+            boy.add_event(DASH_TIMER)
 
 
     @staticmethod
@@ -168,15 +164,14 @@ next_state_table = {
 
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState,
                LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState,
-               SHIFT_DOWN: DashState},
+               SHIFT_DOWN: DashState, SHIFT_UP: RunState},
 
     SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState,
                  LEFT_UP: RunState, RIGHT_UP: RunState},
 
     DashState: {RIGHT_UP: RunState, LEFT_UP: RunState,
                 LEFT_DOWN: RunState, RIGHT_DOWN: RunState,
-                SHIFT_UP: RunState}
-    #DASH_TIMER: DashState}
+                SHIFT_UP: RunState, DASH_TIMER: RunState}
 }
 
 
@@ -189,7 +184,7 @@ class Boy:
         self.velocity = 0
         self.frame = 0
         self.timer = 0
-        self.dashtimer = 50
+        self.dashtimer = 70
         self.vserve = 2
         self.dire = 0
         self.serve = 0
