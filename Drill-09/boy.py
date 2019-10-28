@@ -1,13 +1,15 @@
 from pico2d import *
 
 # Boy Event
-RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER = range(5)
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SHIFT_DOWN, SHIFT_UP, SLEEP_TIMER, DASH_TIMER = range(8)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
     (SDL_KEYDOWN, SDLK_LEFT): LEFT_DOWN,
     (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
     (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
+    (SDL_KEYDOWN, SDLK_LSHIFT): SHIFT_DOWN,
+    (SDL_KEYUP, SDLK_LSHIFT): SHIFT_UP
 }
 
 
@@ -51,12 +53,16 @@ class RunState:
     def enter(boy, event):
         if event == RIGHT_DOWN:
             boy.velocity += 2
+            boy.dire = 1
         elif event == LEFT_DOWN:
             boy.velocity -= 2
+            boy.dire = -1
         elif event == RIGHT_UP:
             boy.velocity -= 2
+            boy.dire = -2
         elif event == LEFT_UP:
             boy.velocity += 2
+            boy.dire = 2
 
         boy.dir = boy.velocity
         #boy.dashtimer = 50
@@ -75,6 +81,58 @@ class RunState:
     @staticmethod
     def draw(boy):
         if boy.velocity == 2 or boy.velocity == 4:
+            boy.image.clip_draw(boy.frame * 100, 100, 100, 100, boy.x, boy.y)
+        else:
+            boy.image.clip_draw(boy.frame * 100, 0, 100, 100, boy.x, boy.y)
+
+
+class DashState:
+    @staticmethod
+    def enter(boy, event):
+        """
+        if event == RIGHT_DOWN and event == SHIFT_DOWN:
+            boy.velocity += 4
+        elif event == LEFT_DOWN and event == SHIFT_DOWN:
+            boy.velocity -= 4
+        elif event == RIGHT_UP and event == SHIFT_DOWN:
+            boy.velocity -= 4
+        elif event == LEFT_UP and event == SHIFT_DOWN:
+            boy.velocity += 4
+        """
+        boy.vserve = 4
+        if event == SHIFT_DOWN:
+            if boy.dire == -1:
+                boy.velocity -= boy.vserve
+            elif boy.dire == 1:
+                boy.velocity += boy.vserve
+        elif event == LEFT_UP:
+            boy.dire = 0
+        elif event == RIGHT_UP:
+            boy.dire = 0
+        #boy.dashtimer = 50
+        boy.dir = boy.velocity
+
+    @staticmethod
+    def exit(boy, event):
+        if boy.dire == 1:
+            boy.velocity -= boy.vserve
+        elif boy.dire == -1:
+            boy.velocity += boy.vserve
+        boy.vserve = 2
+        pass
+
+    @staticmethod
+    def do(boy):
+        boy.frame = (boy.frame + 1) % 8
+        boy.timer -= 1
+        boy.dashtimer -= 1
+        boy.x += boy.velocity
+        boy.x = clamp(25, boy.x, 800 - 25)
+
+
+    @staticmethod
+    def draw(boy):
+        if boy.dire == 1:
             boy.image.clip_draw(boy.frame * 100, 100, 100, 100, boy.x, boy.y)
         else:
             boy.image.clip_draw(boy.frame * 100, 0, 100, 100, boy.x, boy.y)
@@ -109,11 +167,15 @@ next_state_table = {
                 SLEEP_TIMER: SleepState},
 
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState,
-               LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState},
+               LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState,
+               SHIFT_DOWN: DashState},
 
     SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState,
                  LEFT_UP: RunState, RIGHT_UP: RunState},
 
+    DashState: {RIGHT_UP: RunState, LEFT_UP: RunState,
+                LEFT_DOWN: RunState, RIGHT_DOWN: RunState,
+                SHIFT_UP: RunState}
     #DASH_TIMER: DashState}
 }
 
@@ -129,6 +191,7 @@ class Boy:
         self.timer = 0
         self.dashtimer = 50
         self.vserve = 2
+        self.dire = 0
         self.serve = 0
         self.event_que = []
         self.cur_state = IdleState
