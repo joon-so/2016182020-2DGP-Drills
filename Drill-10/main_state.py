@@ -7,19 +7,23 @@ import game_framework
 import game_world
 
 from boy import Boy
+from bird import Bird
 from grass import Grass
 
 
 name = "MainState"
 
 boy = None
+bird = None
 
 def enter():
-    global boy
+    global boy, bird
     boy = Boy()
+    bird = Bird()
     grass = Grass()
     game_world.add_object(grass, 0)
     game_world.add_object(boy, 1)
+    game_world.add_object(bird, 1)
 
 
 def exit():
@@ -47,7 +51,6 @@ def handle_events():
 def update():
     for game_object in game_world.all_objects():
         game_object.update()
-    # fill here
 
 
 def draw():
