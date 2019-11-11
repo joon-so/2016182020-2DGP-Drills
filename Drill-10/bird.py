@@ -6,7 +6,7 @@ import game_world
 
 # Boy Run Speed
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30cm
-RUN_SPEED_KMPH = 20.0 # Km / Hour
+RUN_SPEED_KMPH = 40.0 # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -14,7 +14,7 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 # Boy Action Speed
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 8
+FRAMES_PER_ACTION = 14
 
 FLY = range(1)
 
@@ -40,11 +40,6 @@ class IdleState:
 class RunState:
     @staticmethod
     def enter(bird, event):
-        if bird.direct == 1:
-            bird.velocity += RUN_SPEED_PPS
-        elif bird.direct == -1:
-            bird.velocity -= RUN_SPEED_PPS
-        #bird.dir = clamp(-1, bird.velocity, 1)
         pass
 
     @staticmethod
@@ -53,6 +48,11 @@ class RunState:
 
     @staticmethod
     def do(bird):
+        bird.velocity = 0
+        if bird.direct == 1:
+            bird.velocity += RUN_SPEED_PPS
+        elif bird.direct == -1:
+            bird.velocity -= RUN_SPEED_PPS
         bird.frame = (bird.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 5
         bird.x += bird.velocity * game_framework.frame_time
         bird.x = clamp(75, bird.x, 1600 - 75)
@@ -60,8 +60,6 @@ class RunState:
             bird.direct = -1
         elif bird.x == 75:
             bird.direct = 1
-
-
 
     @staticmethod
     def draw(bird):
@@ -74,8 +72,14 @@ class RunState:
             if int(bird.frame) == 4:
                 bird.frame_y -= 1
         else:
+            if bird.frame_y == 0:
+                if int(bird.frame) == 4:
+                    bird.frame = 0
+                    bird.frame_y = 2
             bird.image.clip_composite_draw(int(bird.frame) * 182, bird.frame_y * 168, 182, 168, 3.141592 / 1, 'v', bird.x,
                                           bird.y, 182, 168)
+            if int(bird.frame) == 4:
+                bird.frame_y -= 1
 
 next_state_table = {
     IdleState: {FLY: RunState}
