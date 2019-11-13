@@ -148,7 +148,7 @@ class Boy:
         self.cur_state.enter(self, None)
 
     def get_bb(self):
-        return self.x - 50, self.y - 50, self.x + 50, self.y + 50
+        return self.x - 25, self.y - 40, self.x + 25, self.y + 40
 
 
     def fire_ball(self):
