@@ -55,11 +55,11 @@ class IdleState:
     @staticmethod
     def do(boy):
         if boy.jumpState == 1:
-            boy.y += RUN_SPEED_PPS * game_framework.frame_time
+            boy.y += RUN_SPEED_PPS * game_framework.frame_time * 3
             if boy.y >= 300:
                 boy.jumpState = 2
         elif boy.jumpState == 2:
-            boy.y -= RUN_SPEED_PPS * game_framework.frame_time
+            boy.y -= RUN_SPEED_PPS * game_framework.frame_time * 3
             if boy.y <= 90:
                 boy.y = 90
                 boy.jumpState = 0
@@ -99,11 +99,11 @@ class RunState:
     @staticmethod
     def do(boy):
         if boy.jumpState == 1:
-            boy.y += RUN_SPEED_PPS * game_framework.frame_time
+            boy.y += RUN_SPEED_PPS * game_framework.frame_time * 3
             if boy.y >= 300:
                 boy.jumpState = 2
         elif boy.jumpState == 2:
-            boy.y -= RUN_SPEED_PPS * game_framework.frame_time
+            boy.y -= RUN_SPEED_PPS * game_framework.frame_time * 3
             if boy.y <= 90:
                 boy.y = 90
                 boy.jumpState = 0
