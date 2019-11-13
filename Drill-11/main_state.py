@@ -31,8 +31,6 @@ def collide(a, b):
     return True
 
 
-
-
 def enter():
     global boy
     boy = Boy()
@@ -45,8 +43,6 @@ def enter():
     global grass
     grass = Grass()
     game_world.add_object(grass, 0)
-
-
 
     global balls
     balls = [Ball() for i in range(10)] + [BigBall() for i in range(10)]
@@ -92,6 +88,10 @@ def update():
             ball.stop()
         if collide(brick, ball):
             ball.stop()
+            ball.x += brick.velocity * game_framework.frame_time
+        if collide(brick, boy):
+            boy.y = brick.y + 59
+            boy.x += brick.velocity * game_framework.frame_time
 
 
 
