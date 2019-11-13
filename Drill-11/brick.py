@@ -54,10 +54,10 @@ class RunState:
             brick.velocity -= RUN_SPEED_PPS
 
         brick.x += brick.velocity * game_framework.frame_time
-        brick.x = clamp(80, brick.x, 1600 - 130)
+        brick.x = clamp(120, brick.x, 1600 - 130)
         if brick.x == 1600 - 130:
             brick.direct = -1
-        elif brick.x == 80:
+        elif brick.x == 120:
             brick.direct = 1
 
     @staticmethod
