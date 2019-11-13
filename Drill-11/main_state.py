@@ -90,7 +90,7 @@ def update():
             ball.stop()
             ball.x += brick.velocity * game_framework.frame_time
         if collide(brick, boy):
-            boy.y = brick.y + 59
+            boy.y = brick.y + 54
             boy.x += brick.velocity * game_framework.frame_time
 
 

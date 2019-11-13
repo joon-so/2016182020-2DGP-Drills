@@ -167,7 +167,7 @@ class Boy:
         self.cur_state.enter(self, None)
 
     def get_bb(self):
-        return self.x - 25, self.y - 40, self.x + 25, self.y + 40
+        return self.x - 25, self.y - 35, self.x + 25, self.y + 35
 
 
     def add_event(self, event):
