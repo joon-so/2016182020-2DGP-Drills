@@ -86,7 +86,7 @@ def update():
         if collide(zombie, ball):
             balls.remove(ball)
             game_world.remove_object(ball)
-            Boy.Hp += 100
+            Zombie.Hp += 100
 
 
 

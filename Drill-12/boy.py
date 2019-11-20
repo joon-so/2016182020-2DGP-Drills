@@ -102,7 +102,7 @@ next_state_table = {
 
 
 class Boy:
-    Hp = 100
+    Hp = 0
     def __init__(self):
         self.x, self.y = 1280 // 2, 1024 // 2
         # Boy is only once created, so instance image loading is fine

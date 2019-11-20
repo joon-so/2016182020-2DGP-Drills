@@ -3,6 +3,7 @@ import math
 import game_framework
 from BehaviorTree import BehaviorTree, SelectorNode, SequenceNode, LeafNode
 from pico2d import *
+from boy import Boy
 import main_state
 
 # zombie Run Speed
@@ -23,7 +24,7 @@ animation_names = ['Attack', 'Dead', 'Idle', 'Walk']
 
 class Zombie:
     images = None
-    Hp = 100
+    Hp = 0
     def load_images(self):
         if Zombie.images == None:
             Zombie.images = {}
@@ -31,7 +32,7 @@ class Zombie:
                 Zombie.images[name] = [load_image("./zombiefiles/female/"+ name + " (%d)" % i + ".png") for i in range(1, 11)]
 
     def __init__(self):
-        positions = [(43, 750), (1118, 750), (1050, 530), (575, 220), (235, 33), (575, 220), (1050, 530), (1118, 750)]
+        positions = [(300, 500), (1118, 750), (1050, 530), (575, 220), (235, 33), (575, 220), (1050, 530), (1118, 750)]
         self.patrol_positions = []
         for p in positions:
             self.patrol_positions.append((p[0], 1024 - p[1]))  # convert for origin at bottom, left
@@ -67,7 +68,7 @@ class Zombie:
     def find_player(self):
         boy = main_state.get_boy()
         distance = (boy.x - self.x) **2 + (boy.y - self.y)**2
-        if distance < (PIXEL_PER_METER * 10) **2:
+        if distance < (PIXEL_PER_METER * 8) **2:
             self.dir = math.atan2(boy.y - self.y, boy.x - self.x)
             return BehaviorTree.SUCCESS
         else:
@@ -77,7 +78,18 @@ class Zombie:
     def move_to_player(self):
         self.speed = RUN_SPEED_PPS
         self.calculate_current_position()
-        return BehaviorTree.SUCCESS
+        if Boy.Hp < Zombie.Hp:
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+
+    def away_from_player(self):
+        self.speed = -1 * RUN_SPEED_PPS
+        self.calculate_current_position()
+        if Boy.Hp < Zombie.Hp:
+            return BehaviorTree.FAIL
+        else:
+            return BehaviorTree.SUCCESS
 
     def get_next_position(self):
         self.target_x, self.target_y = self.patrol_positions[self.patrol_order % len(self.patrol_positions)]
@@ -100,10 +112,20 @@ class Zombie:
         wander_node = LeafNode("Wander", self.wander)
         find_player_node = LeafNode("Find Player", self.find_player)
         move_to_player_node = LeafNode("Move to Player", self.move_to_player)
+        #
+        away_from_player_node = LeafNode("Away from Player", self.away_from_player)
+
         chase_node = SequenceNode("Chase")
         chase_node.add_children(find_player_node, move_to_player_node)
+
+        away_node = SequenceNode("Away")
+        away_node.add_children(find_player_node, away_from_player_node)
+
+        find_node = SelectorNode("Find")
+        find_node.add_children(chase_node, away_node)
+
         wander_chase_node = SelectorNode("WanderChase")
-        wander_chase_node.add_children(chase_node, wander_node)
+        wander_chase_node.add_children(find_node, wander_node)
         self.bt = BehaviorTree(wander_chase_node)
 
     def get_bb(self):
