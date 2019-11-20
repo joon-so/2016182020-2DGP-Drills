@@ -84,7 +84,7 @@ class Zombie:
             return BehaviorTree.FAIL
 
     def away_from_player(self):
-        self.speed = -1 * RUN_SPEED_PPS
+        self.speed = -2 * RUN_SPEED_PPS
         self.calculate_current_position()
         if Boy.Hp < Zombie.Hp:
             return BehaviorTree.FAIL
@@ -135,16 +135,24 @@ class Zombie:
         self.bt.run()
 
     def draw(self):
+
         if math.cos(self.dir) < 0:
             if self.speed == 0:
                 Zombie.images['Idle'][int(self.frame)].composite_draw(0, 'h', self.x, self.y, 100, 100)
             else:
-                Zombie.images['Walk'][int(self.frame)].composite_draw(0, 'h', self.x, self.y, 100, 100)
+                if Zombie.Hp > Boy.Hp:
+                    Zombie.images['Walk'][int(self.frame)].composite_draw(0, 'h', self.x, self.y, 100, 100)
+                else:
+                    Zombie.images['Walk'][int(self.frame)].draw(self.x, self.y, 100, 100)
         else:
             if self.speed == 0:
                 Zombie.images['Idle'][int(self.frame)].draw(self.x, self.y, 100, 100)
             else:
-                Zombie.images['Walk'][int(self.frame)].draw(self.x, self.y, 100, 100)
+                if Zombie.Hp > Boy.Hp:
+                    Zombie.images['Walk'][int(self.frame)].draw(self.x, self.y, 100, 100)
+                else:
+                    Zombie.images['Walk'][int(self.frame)].composite_draw(0, 'h', self.x, self.y, 100, 100)
+
         self.font.draw(self.x - 60, self.y + 50, '(%.0d)' % Zombie.Hp, (255, 255, 0))
 
     def handle_event(self, event):

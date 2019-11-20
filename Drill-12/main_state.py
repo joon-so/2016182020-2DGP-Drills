@@ -88,6 +88,13 @@ def update():
             game_world.remove_object(ball)
             Zombie.Hp += 100
 
+    if collide(zombie, boy):
+        if Zombie.Hp > Boy.Hp:
+            game_framework.quit()
+        else:
+            game_world.remove_object(zombie)
+
+
 
 
 def draw():
