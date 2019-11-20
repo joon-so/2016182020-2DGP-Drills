@@ -102,7 +102,7 @@ next_state_table = {
 
 
 class Boy:
-
+    Hp = 100
     def __init__(self):
         self.x, self.y = 1280 // 2, 1024 // 2
         # Boy is only once created, so instance image loading is fine
@@ -133,7 +133,7 @@ class Boy:
 
     def draw(self):
         self.cur_state.draw(self)
-        self.font.draw(self.x - 60, self.y + 50, '(Time: %3.2f)' % get_time(), (255, 255, 0))
+        self.font.draw(self.x - 60, self.y + 50, '(%.0d)' % Boy.Hp, (255, 255, 0))
         #fill here
         draw_rectangle(*self.get_bb())
         #debug_print('Velocity :' + str(self.velocity) + '  Dir:' + str(self.dir) + ' Frame Time:' + str(game_framework.frame_time))

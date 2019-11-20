@@ -23,7 +23,7 @@ animation_names = ['Attack', 'Dead', 'Idle', 'Walk']
 
 class Zombie:
     images = None
-
+    Hp = 100
     def load_images(self):
         if Zombie.images == None:
             Zombie.images = {}
@@ -45,6 +45,7 @@ class Zombie:
         self.timer = 1.0 # change direction every 1 sec when wandering
         self.frame = 0
         self.build_behavior_tree()
+        self.font = load_font('ENCR10B.TTF', 16)
 
     def calculate_current_position(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
@@ -105,10 +106,6 @@ class Zombie:
         wander_chase_node.add_children(chase_node, wander_node)
         self.bt = BehaviorTree(wander_chase_node)
 
-
-
-
-
     def get_bb(self):
         return self.x - 50, self.y - 50, self.x + 50, self.y + 50
 
@@ -126,6 +123,7 @@ class Zombie:
                 Zombie.images['Idle'][int(self.frame)].draw(self.x, self.y, 100, 100)
             else:
                 Zombie.images['Walk'][int(self.frame)].draw(self.x, self.y, 100, 100)
+        self.font.draw(self.x - 60, self.y + 50, '(%.0d)' % Zombie.Hp, (255, 255, 0))
 
     def handle_event(self, event):
         pass
