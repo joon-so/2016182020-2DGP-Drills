@@ -75,6 +75,16 @@ class Zombie:
             self.speed = 0
             return BehaviorTree.FAIL
 
+    def find_ball(self):
+        boy = main_state.get_boy()
+        distance = (boy.x - self.x) **2 + (boy.y - self.y)**2
+        if distance < (PIXEL_PER_METER * 8) **2:
+            self.dir = math.atan2(boy.y - self.y, boy.x - self.x)
+            return BehaviorTree.SUCCESS
+        else:
+            self.speed = 0
+            return BehaviorTree.FAIL
+
     def move_to_player(self):
         self.speed = RUN_SPEED_PPS
         self.calculate_current_position()
