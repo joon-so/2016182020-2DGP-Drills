@@ -115,6 +115,7 @@ class Zombie:
                 Zombie.images['Walk'][int(self.frame)].draw(self.x, self.y, tw, th)
 
         Zombie.font.draw(self.x - 30, self.y + 50, self.name, (255, 255, 0))
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         pass

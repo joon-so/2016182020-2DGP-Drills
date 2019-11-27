@@ -145,13 +145,11 @@ class Boy:
         return self.x - 50, self.y - 50, self.x + 50, self.y + 50
 
 
-    def fire_ball(self):
-        ball = Ball(self.x, self.y, self.dir * RUN_SPEED_PPS * 10)
-        game_world.add_object(ball, 1)
-
-
     def add_event(self, event):
         self.event_que.insert(0, event)
+
+    def collide_zombie(self):
+        self.end_time = get_time() - self.start_time
 
     def update(self):
         self.cur_state.do(self)
@@ -164,6 +162,7 @@ class Boy:
     def draw(self):
         self.cur_state.draw(self)
         self.font.draw(self.x - 60, self.y + 50, '(Time: %3.2f)' % (get_time() - self.start_time), (0, 0, 0))
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
