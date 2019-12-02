@@ -7,13 +7,14 @@ import game_framework
 import game_world
 
 from boy import Boy
+from ball import Ball
 from background import FixedBackground as Background
 
 name = "MainState"
 
 boy = None
 background = None
-
+balls = None
 
 def collide(a, b):
     # fill here
@@ -41,6 +42,12 @@ def enter():
     global background
     background = Background()
     game_world.add_object(background, 0)
+
+    global balls
+    balls = [Ball() for i in range(100)]
+    game_world.add_objects(balls, 1)
+    for ball in balls:
+        ball.set_background(background)
 
     background.set_center_object(boy)
     boy.set_background(background)
