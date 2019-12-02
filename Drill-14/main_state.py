@@ -78,6 +78,12 @@ def handle_events():
 def update():
     for game_object in game_world.all_objects():
         game_object.update()
+    for ball in balls:
+        if collide(boy, ball):
+            balls.remove(ball)
+            game_world.remove_object(ball)
+            Boy.ball_count += 1
+
 
 
 def draw():
